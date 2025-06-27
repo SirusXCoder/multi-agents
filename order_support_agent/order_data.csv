@@ -1,0 +1,13 @@
+id,text,metadata
+1,Order #1234 shipped on 06/12/2025, tracking: XYZ,{"type": "order"}
+2,Return for Order #5678 approved on 06/10/2025,{"type": "return"}
+3,Order #9012 delivered on 06/15/2025, tracking: ABC,{"type": "order"}
+4,Return request for Order #3456 processed on 06/11/2025,{"type": "return"}
+5,Order #7890 shipped on 06/13/2025, tracking: DEF,{"type": "order"}
+6,Order #4567 delayed, expected delivery 06/25/2025, tracking: GHI,{"type": "order"}
+7,Return for Order #2345 completed on 06/09/2025,{"type": "return"}
+8,Order #6789 shipped on 06/14/2025, tracking: JKL,{"type": "order"}
+9,Return request for Order #8901 pending on 06/16/2025,{"type": "return"}
+10,Order #1235 in transit, tracking: MNO,{"type": "order"}
+11,Return for Order #5679 rejected on 06/17/2025,{"type": "return"}
+12,Order #9013 canceled on 06/18/2025,{"type": "order"}
