@@ -14,6 +14,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application files
 COPY ingest_health_data.py health_wellness_agent.py health_data.csv .env ./
 
-# Run script based on command
-CMD ["python", "-c", "import os; cmd = os.getenv('CMD', 'ingest'); exec(open(f'{cmd}_health_data.py').read())"]
-ENTRYPOINT ["sh", "-c"]
+# Keep container running with a shell
+CMD ["tail", "-f", "/dev/null"]

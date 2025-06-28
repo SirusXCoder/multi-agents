@@ -1,6 +1,6 @@
 # Multi-Agent Systems Demo: **Order Support Agent** & **Health Wellness Agent**
 
-Welcome to the **Multi-Agent Systems Demo** repository! This project showcases two practical applications of multi-agent AI systems built using Python, LangChain, Pinecone, and OpenAI: the **boldly highlighted **[Order Support Agent](#order-support-agent) and the **boldly highlighted **[Health Wellness Agent](#health-wellness-agent). These projects are featured in a YouTube training video by `Bridge 2 Success` (@bridge_2_success) to help beginners, developers, businesses, and students understand and implement multi-agent AI solutions. Whether you're learning AI basics or exploring enterprise applications, this repo is your starting point!
+Welcome to the **Multi-Agent Systems Demo** repository! This project showcases two practical applications of multi-agent AI systems built using Python, LangChain, Pinecone, and OpenAI: the **boldly highlighted **[Order Support Agent](#order-support-agent) and the **boldly highlighted **[Health Wellness Agent](#health-wellness-agent). These projects are featured in a YouTube training video by Bridge2Sucess (@bridge_2_success) to help beginners, developers, businesses, and students understand and implement multi-agent AI solutions. Whether you're learning AI basics or exploring enterprise applications, this repo is your starting point!
 
 ## Overview
 - **Order Support Agent**: Automates order tracking, returns, and customer support for e-commerce, addressing the growing demand for efficient online shopping solutions.
@@ -53,9 +53,10 @@ This design overcomes challenges like data overload and slow responses by splitt
    ```
 
 3. **Install Dependencies**
-   Install required packages from `requirements.txt`:
+   Install required packages from `requirements.txt` in each agent folder:
    ```bash
-   pip install -r requirements.txt
+   pip install -r order_support_agent/requirements.txt
+   pip install -r health_wellness_agent/requirements.txt
    ```
 
 4. **Configure Environment Variables**
@@ -76,40 +77,73 @@ This design overcomes challenges like data overload and slow responses by splitt
 
 #### Docker Setup
 1. **Build Docker Images**
-   - For **Order Support Agent**:
-     ```bash
-     cd order_support_agent
-     docker build -t order-support-agent .
-     ```
    - For **Health Wellness Agent**:
      ```bash
      cd health_wellness_agent
-     docker build -t health-wellness-agent .
+     docker buildx build --no-cache --platform linux/amd64 -t health-wellness-agent .
+     ```
+   - For **Order Support Agent**:
+     ```bash
+     cd order_support_agent
+     docker buildx build --no-cache --platform linux/amd64 -t order-support-agent .
      ```
 
 2. **Run Containers**
-   - For **Order Support Agent** (ingest data):
+   - For **Health Wellness Agent**:
      ```bash
-     docker run --rm -v $(pwd)/order_data.csv:/app/order_data.csv -v $(pwd)/.env:/app/.env order-support-agent ingest
+     docker run -d --name health-wellness-agent -v C:/Users/asudh/PycharmProjects/pythonProject/multi-agents/health_wellness_agent/health_data.csv:/app/health_data.csv -v C:/Users/asudh/PycharmProjects/pythonProject/multi-agents/health_wellness_agent/.env:/app/.env health-wellness-agent
      ```
-   - For **Order Support Agent** (run agent):
+   - For **Order Support Agent**:
      ```bash
-     docker run --rm -v $(pwd)/order_data.csv:/app/order_data.csv -v $(pwd)/.env:/app/.env order-support-agent run
+     docker run -d --name order-support-agent -v C:/Users/asudh/PycharmProjects/pythonProject/multi-agents/order_support_agent/order_data.csv:/app/order_data.csv -v C:/Users/asudh/PycharmProjects/pythonProject/multi-agents/order_support_agent/.env:/app/.env order-support-agent
      ```
-   - For **Health Wellness Agent** (ingest data):
-     ```bash
-     docker run --rm -v $(pwd)/health_data.csv:/app/health_data.csv -v $(pwd)/.env:/app/.env health-wellness-agent ingest
-     ```
-   - For **Health Wellness Agent** (run agent):
-     ```bash
-     docker run --rm -v $(pwd)/health_data.csv:/app/health_data.csv -v $(pwd)/.env:/app/.env health-wellness-agent run
-     ```
-   - **Note:** Replace `$(pwd)` with the absolute path on Windows (e.g., `C:/Users/asudh/...`) if needed.
 
-3. **Verify Containers**
+3. **Enter Containers**
+   - For **Health Wellness Agent**:
+     ```bash
+     docker exec -u 0 -it health-wellness-agent sh
+     ```
+   - For **Order Support Agent**:
+     ```bash
+     docker exec -u 0 -it order-support-agent sh
+     ```
+
+4. **Run Scripts Manually Inside Containers**
+   - For **Health Wellness Agent**:
+     - Ingest data:
+       ```bash
+       python ingest_health_data.py
+       ```
+     - Run agent:
+       ```bash
+       python health_wellness_agent.py
+       ```
+   - For **Order Support Agent**:
+     - Ingest data:
+       ```bash
+       python ingest_order_data.py
+       ```
+     - Run agent:
+       ```bash
+       python order_support_agent.py
+       ```
+
+5. **Exit Containers**
    ```bash
-   docker ps -a
+   exit
    ```
+
+   - **Windows Note:** Use the exact paths shown above, replacing with your user directory if different. Ensure forward slashes (`/`) are used.
+
+6. **Verify Containers**
+   ```bash
+   docker ps
+   ```
+   - Remove existing containers if name conflicts occur:
+     ```bash
+     docker rm health-wellness-agent
+     docker rm order-support-agent
+     ```
 
 ### Git Commands
 - **Check Out Code:**
@@ -145,13 +179,15 @@ multi_agents/
 │   ├── order_support_agent.py
 │   ├── order_data.csv
 │   ├── .env
-│   └── Dockerfile
+│   ├── Dockerfile
+│   └── requirements.txt
 ├── health_wellness_agent/
 │   ├── ingest_health_data.py
 │   ├── health_wellness_agent.py
 │   ├── health_data.csv
 │   ├── .env
-│   └── Dockerfile
+│   ├── Dockerfile
+│   └── requirements.txt
 ├── README.md
 └── requirements.txt
 ```
@@ -164,7 +200,7 @@ multi_agents/
 - **YouTube Demo**: Watch the full tutorial at [Insert Your YouTube Link] for step-by-step guidance.
 - **Community**: Join discussions on [Insert Your Discord/Forum Link] or follow @nworkskills on GitHub/X.
 - **Contributions**: Fork this repo, make changes, and submit pull requests. Add your API keys to `.env` for testing.
-- **Troubleshooting**: If ingestion fails, verify CSV formatting and API keys. Check Pinecone dashboard for indexed vectors.
+- **Troubleshooting**: If ingestion fails, verify CSV formatting, API keys, and Docker volume paths. Check Pinecone dashboard for indexed vectors.
 - **Security**: Never commit `.env` files. Use `.gitignore` to exclude them.
 
 ## License
@@ -173,3 +209,17 @@ This project is open-source under the MIT License. See [LICENSE](LICENSE) for de
 ## Acknowledgments
 - Inspired by multi-agent frameworks and tutorials from the AI community.
 - Thanks to viewers and contributors for supporting this learning journey!
+```
+
+### Updated requirements.txt
+Place this `requirements.txt` in both `multi-agents/order_support_agent/` and `multi-agents/health_wellness_agent/` directories:
+
+
+langchain==0.3.25
+langchain-openai==0.3.18
+langchain-pinecone==0.2.8
+langchain-core==0.3.65
+pinecone-client==6.0.0
+openai==1.86.0
+pandas==2.2.3
+python-dotenv==1.1.0
