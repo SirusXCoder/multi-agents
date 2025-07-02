@@ -42,8 +42,8 @@ This design overcomes challenges like data overload and slow responses by splitt
 #### Local Setup
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/nworkskills/multi_agents.git
-   cd multi_agents
+   git clone https://github.com/nworkskills/multi-agents.git
+   cd multi-agents
    ```
 
 2. **Set Up Virtual Environment**
@@ -148,8 +148,8 @@ This design overcomes challenges like data overload and slow responses by splitt
 ### Git Commands
 - **Check Out Code:**
   ```bash
-  git clone https://github.com/nworkskills/multi_agents.git
-  cd multi_agents
+  git clone https://github.com/nworkskills/multi-agents.git
+  cd multi-agents
   git checkout main  # Switch to main branch (default)
   ```
 - **Check In Changes:**
