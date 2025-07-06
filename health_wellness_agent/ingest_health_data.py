@@ -7,9 +7,39 @@ import pandas as pd
 from pinecone import Pinecone, ServerlessSpec
 from dotenv import load_dotenv
 import platform
+import sys
+import locale
+import unicodedata
+import re
 
 # Load environment variables
 load_dotenv()
+
+# Monkey-patch httpx to handle encoding issues in headers
+import httpx._models
+original_normalize = httpx._models._normalize_header_value
+
+def patched_normalize_header_value(value, encoding=None):
+    """Patched version that handles Unicode characters gracefully."""
+    if isinstance(value, str):
+        # Replace problematic Unicode characters
+        value = value.replace('\u2014', '--')  # em dash
+        value = value.replace('\u2013', '-')   # en dash
+        value = value.replace('\u2019', "'")   # right single quotation mark
+        value = value.replace('\u201c', '"')   # left double quotation mark
+        value = value.replace('\u201d', '"')   # right double quotation mark
+        # Remove any remaining non-ASCII characters
+        value = ''.join(c for c in value if ord(c) < 128)
+    return original_normalize(value, encoding)
+
+httpx._models._normalize_header_value = patched_normalize_header_value
+
+# Set up proper encoding environment
+os.environ['PYTHONIOENCODING'] = 'utf-8'
+os.environ['LC_ALL'] = 'en_US.UTF-8'
+os.environ['LANG'] = 'en_US.UTF-8'
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
 
 # Initialize Pinecone client
 pc = Pinecone(api_key=os.environ["PINECONE_API_KEY"])

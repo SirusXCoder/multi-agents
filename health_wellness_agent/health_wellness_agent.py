@@ -10,6 +10,25 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
+# Monkey-patch httpx to handle encoding issues in headers
+import httpx._models
+original_normalize = httpx._models._normalize_header_value
+
+def patched_normalize_header_value(value, encoding=None):
+    """Patched version that handles Unicode characters gracefully."""
+    if isinstance(value, str):
+        # Replace problematic Unicode characters
+        value = value.replace('\u2014', '--')  # em dash
+        value = value.replace('\u2013', '-')   # en dash
+        value = value.replace('\u2019', "'")   # right single quotation mark
+        value = value.replace('\u201c', '"')   # left double quotation mark
+        value = value.replace('\u201d', '"')   # right double quotation mark
+        # Remove any remaining non-ASCII characters
+        value = ''.join(c for c in value if ord(c) < 128)
+    return original_normalize(value, encoding)
+
+httpx._models._normalize_header_value = patched_normalize_header_value
+
 # Initialize components
 embeddings = OpenAIEmbeddings(api_key=os.environ["OPENAI_API_KEY"])
 vectorstore = PineconeVectorStore.from_existing_index(index_name="health-data", embedding=embeddings)
